@@ -243,6 +243,11 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Home,
 		LinkPreset.Archive,
 		{
+			name: "碎碎念",
+			url: "/notes/",
+			icon: "material-symbols:chat-bubble-outline",
+		},
+		{
 			name: "链接",
 			url: "#",
 			icon: "material-symbols:link",

@@ -43,7 +43,18 @@ const specCollection = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./src/content/spec" }),
 	schema: z.object({}),
 });
+// 短文单独存放，栏目直接展示全文，不混入长文章列表。
+const notesCollection = defineCollection({
+	loader: glob({ pattern: "**/*.md", base: "./src/content/notes" }),
+	schema: z.object({
+		title: z.string(),
+		published: z.date(),
+		draft: z.boolean().default(false),
+	}),
+});
+
 export const collections = {
 	posts: postsCollection,
 	spec: specCollection,
+	notes: notesCollection,
 };

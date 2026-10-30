@@ -1,0 +1,79 @@
+---
+import { getCollection, render } from "astro:content";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { url } from "@utils/url-utils";
+
+const notes = (await getCollection("notes", ({ data }) => !data.draft))
+	.sort((a, b) => b.data.published.getTime() - a.data.published.getTime() || a.id.localeCompare(b.id));
+const entries = await Promise.all(notes.map(async (note) => ({
+	...note,
+	...await render(note),
+})));
+---
+
+<MainGridLayout title="碎碎念" description="一些短短的想法，随手记在这里。">
+	<script>
+		import "../../scripts/right-sidebar-layout.js";
+	</script>
+	<section class="notes card-base" aria-labelledby="notes-title" data-pagefind-body>
+		<header class="notes-header">
+			<h1 id="notes-title" class="text-90" data-pagefind-meta="title">碎碎念</h1>
+			<p class="text-75">一些短短的想法，随手记在这里。</p>
+		</header>
+		{entries.map(({ id, data, Content }) => (
+			<article class="note" id={id} aria-labelledby={`title-${id}`}>
+				<time class="text-75" datetime={data.published.toISOString()}>
+					{data.published.toISOString().slice(0, 10)}
+				</time>
+				<h2 id={`title-${id}`} class="text-90">
+					<a href={url(`/notes/#${id}`)}>{data.title}</a>
+				</h2>
+				<div class="prose dark:prose-invert prose-base max-w-none! custom-md">
+					<Content />
+				</div>
+			</article>
+		))}
+		{entries.length === 0 && <p class="text-75">还没有碎碎念。</p>}
+	</section>
+</MainGridLayout>
+
+<style>
+	.notes {
+		padding: clamp(1.25rem, 4vw, 2.5rem);
+		min-width: 0;
+	}
+	.notes-header {
+		padding-bottom: 1.75rem;
+	}
+	.notes-header h1 {
+		font-size: 2rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
+	}
+	.note {
+		border-top: 1px solid var(--line-divider);
+		padding-block: 1.75rem;
+		scroll-margin-top: 6rem;
+		overflow-wrap: anywhere;
+	}
+	.note:last-child {
+		padding-bottom: 0;
+	}
+	.note time {
+		font-size: 0.875rem;
+	}
+	.note h2 {
+		margin-top: 0.5rem;
+		margin-bottom: 1rem;
+		font-size: clamp(1.25rem, 3vw, 1.5rem);
+		font-weight: 700;
+		line-height: 1.5;
+	}
+	.note h2 a:hover {
+		color: var(--primary);
+	}
+	.note h2 a:focus-visible {
+		outline: 2px solid var(--primary);
+		outline-offset: 4px;
+	}
+</style>
