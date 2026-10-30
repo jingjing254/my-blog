@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>两发子弹，究竟值几分？ · 启发式 AI 靶场</title>
+		<link rel="stylesheet" href="style.css" />
+		<script type="module" src="demo.js"></script>
+	</head>
+	<body>
+		<main>
+			<header>
+				<a href="/posts/heuristic-ai-scoring/">返回文章</a
+				><button id="theme" type="button" aria-label="切换深浅色">
+					切换外观
+				</button>
+			</header>
+			<h1>两发子弹，<br />究竟值几分？</h1>
+			<p class="intro">
+				同一面靶，两次机会。改变血量与事件关系，看看评分在哪里多算了伤害。
+			</p>
+			<noscript
+				>交互需要 JavaScript；完整推导与静态图可在文章中阅读。</noscript
+			>
+			<p id="status" role="status">正在读取精确枚举结果…</p>
+			<form id="controls">
+				<fieldset disabled>
+					<legend>单步随机靶场</legend>
+					<div class="inputs">
+						<label
+							>目标血量<select id="hp">
+								<option value="0">0（已结束）</option>
+								<option value="1" selected>1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+							</select></label
+						>
+						<label
+							>两发的关系<select id="mode">
+								<option value="independent">
+									独立：各自判定
+								</option>
+								<option value="shared">
+									同源：同时中或同时空
+								</option>
+								<option value="exclusive">
+									互斥：至多一发命中
+								</option>
+							</select></label
+						>
+					</div>
+					<label class="slider-label" for="probability"
+						>每发命中概率 <output id="p-label">60%</output></label
+					>
+					<input
+						id="probability"
+						type="range"
+						min="0"
+						max="100"
+						step="1"
+						value="60"
+						aria-describedby="mode-note"
+					/>
+					<p id="mode-note" class="muted"></p>
+				</fieldset>
+			</form>
+			<section aria-labelledby="result-title" aria-live="polite">
+				<h2 id="result-title">评分与实际扣血</h2>
+				<div class="meters" id="meters"></div>
+				<p id="decision"></p>
+				<p class="muted">
+					横条共用 0～2 的刻度。稳射必扣 1 血，双发每次命中扣 1
+					血；两个动作都只消耗一步。奖励单位是有效伤害。
+				</p>
+				<details open>
+					<summary>展开联合结果，逐行结算</summary>
+					<div class="table-wrap">
+						<table>
+							<thead>
+								<tr>
+									<th>两发结果</th>
+									<th>概率</th>
+									<th>实际扣血</th>
+								</tr>
+							</thead>
+							<tbody id="outcomes"></tbody>
+						</table>
+					</div>
+					<p id="fraction" class="muted"></p>
+				</details>
+			</section>
+			<section aria-labelledby="time-title">
+				<h2 id="time-title">换到八血靶，看看剩余步数</h2>
+				<p>
+					这一组没有随机命中。直射 2 伤；蓄力 0 伤；下一步可爆发 5
+					伤。结束时未消耗的蓄力不计分。
+				</p>
+				<label
+					>剩余步数<select id="turns">
+						<option value="1">1</option>
+						<option value="2" selected>2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+					</select></label
+				>
+				<div id="horizon" aria-live="polite"></div>
+			</section>
+			<footer>
+				所有显示值来自 Python 的精确枚举表，概率以 1% 为步长。<a
+					href="data.json"
+					>下载原始结果 JSON</a
+				>
+				·
+				<a
+					href="https://github.com/jingjing254/my-blog/tree/codex/heuristic-ai-scoring-blog/experiments/heuristic-ai"
+					>源码与完整规则</a
+				>
+			</footer>
+		</main>
+	</body>
+</html>
