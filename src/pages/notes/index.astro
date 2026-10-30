@@ -1,6 +1,5 @@
 ---
 import { getCollection, render } from "astro:content";
-import Markdown from "@components/misc/Markdown.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { url } from "@utils/url-utils";
 
@@ -29,7 +28,9 @@ const entries = await Promise.all(notes.map(async (note) => ({
 				<h2 id={`title-${id}`} class="text-90">
 					<a href={url(`/notes/#${id}`)}>{data.title}</a>
 				</h2>
-				<Markdown class="note-body"><Content /></Markdown>
+				<div class="prose dark:prose-invert prose-base max-w-none! custom-md">
+					<Content />
+				</div>
 			</article>
 		))}
 		{entries.length === 0 && <p class="text-75">还没有碎碎念。</p>}
